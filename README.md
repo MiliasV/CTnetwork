@@ -2,10 +2,10 @@
 CTwalk is a function-based Python package that enables  you to download street network and POI data from OSM, and calculate  how accessible these are from different origin locations.
 
 <p float="left">
-    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/amsterdam_sin.png" width="300" height="300" ">
-    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/barc_clos.png" width="300" height="300" ">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/amsterdam_sin.png" width="300" height="300">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/barc_clos.png" width="300" height="300">
                                                                                                       
-    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/helsinki_betw.png" width="300" height="300" ">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/helsinki_betw.png" width="300" height="300">
 </p>
 
 
