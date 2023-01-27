@@ -4,18 +4,18 @@ CTwalk is a function-based Python package that enables  you to download street n
 # Status
 Currently developing.
 ### Installation
-```
-pip install ctwalk
-```
+
+* Clone the repo
+* Run the following command in the terminal:
+
+''' 
+pip install dist/ctwalk-0.1.0-py3-none-any.whl
+'''
 
 ### Get started
 How to download a city's street network enriched by network centrality measures (intersection closeness, street betweenness, street sinuosity)
 
-* Clone the repo
-Run the following command in the terminal:
-''' Python
-pip install dist/ctwalk-0.1.0-py3-none-any.whl
-''''
+
 
 Now you can use the functions of the library.
 For example:
