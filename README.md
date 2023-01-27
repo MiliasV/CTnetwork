@@ -12,6 +12,12 @@ CTwalk is a function-based Python package that enables  you to:
 
 # Status
 Currently developing.
+
+* Download street network and POI data from OpenStreetMap per city or bounding box                                                    --> Done
+* Calculate  street network centrality metrics such as street betweenness, street sinuosity, and intersection closeness.              --> Done
+* Calculate how accessible the POIs are from different origin locations based on the downloaded street network and different weights. --> Pending
+
+
 ### Installation
 
 * Clone the repo
