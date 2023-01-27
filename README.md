@@ -6,9 +6,9 @@ CTwalk is a function-based Python package that enables  you to:
 * Calculate how accessible the POIs are from different origin locations based on the downloaded street network.
 
 <p float="left">
-    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/amsterdam_sin.png" width="300" height="300">
-    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/barc_clos.png" width="300" height="300">
-    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/helsinki_betw.png" width="300" height="300">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/amsterdam_sin.png" width="200" height="200">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/barc_clos.png" width="200" height="200">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/helsinki_betw.png" width="200" height="200">
 </p>
 
 # Status
