@@ -82,9 +82,14 @@ def compute_edge_sinuosity(row):
     else:
         return None
 
+
+###################################### 
+# collect and store streets per city #
+######################################
 def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_folder='.', 
                           intersection_clos=False, street_betw=False, street_sin=False, retain_all=True):
-    #     drive: get drivable public streets (but not service roads)
+    # network_type
+    # drive: get drivable public streets (but not service roads)
     # drive_service: get drivable public streets including service roads
     # walk: get all streets and paths that pedestrians can use (this network type ignores one-way
     # directionality by always connecting adjacent nodes with reciprocal directed edges)
@@ -143,3 +148,55 @@ def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_f
         
         
 
+def get_streets_per_bbox(north, south, east, west, network_type='drive', output_folder='.', 
+                          intersection_clos=False, street_betw=False, street_sin=False, retain_all=True):
+    # network_type
+    # drive: get drivable public streets (but not service roads)
+    # drive_service: get drivable public streets including service roads
+    # walk: get all streets and paths that pedestrians can use (this network type ignores one-way
+    # directionality by always connecting adjacent nodes with reciprocal directed edges)
+    # bike: get all streets and paths that cyclists can use
+    # all: download all (non-private) OpenStreetMap streets and paths
+    # all_private: download all OpenStreetMap streets and paths, including private-access 
+    place_name = "_".join([str(north), str(south),str(east), str(west)])
+    output_folder = output_folder + '/' + "_" + place_name
+    if not os.path.exists(output_folder):
+        os.mkdir(output_folder)
+
+    G = ox.graph_from_bbox(north, south, east, west, network_type=network_type, retain_all=retain_all)
+
+    # store the street network if no enrichment is needed
+    if not intersection_clos and not street_betw and not street_sin:
+        output_file = os.path.join(output_folder, '{}_street_network.csv'.format(place_name.lower()))
+        edges = ox.utils_graph.graph_to_gdfs(G, nodes=False, edges=True, node_geometry=False, fill_edge_geometry=True)
+        edges.to_csv(output_file)
+
+        output_file = os.path.join(output_folder, '{}_intersections.csv'.format(place_name.lower()))
+        inter = ox.utils_graph.graph_to_gdfs(G, nodes=True, edges=False, node_geometry=False, fill_edge_geometry=True)
+        inter.to_csv(output_file)
+
+    # if Intersections - Nodes store closeness per intersection
+    if intersection_clos:
+        nodes = compute_node_closeness(G)
+        output_file = os.path.join(output_folder, '{}_intersections.csv'.format(place_name.lower()))
+        nodes.to_csv(output_file)
+        print("nodes done")
+        
+    # Streets - Edges
+    if street_betw:
+        edges = compute_edge_betweenness(G)
+        print("edges betweenness done")
+    
+    if street_betw and street_sin:
+        edges['edge_sinuosity'] = edges.apply(lambda row: compute_edge_sinuosity(row), axis=1)
+
+    if street_sin and not street_betw:
+        edges = ox.utils_graph.graph_to_gdfs(G, nodes=False, edges=True, node_geometry=False, fill_edge_geometry=True)
+        edges['edge_sinuosity'] = edges.apply(lambda row: compute_edge_sinuosity(row), axis=1)
+    
+    #edge closeness centrality: convert graph to a line graph so edges become nodes and vice versa
+    #edges = nx.closeness_centrality(nx.line_graph(G))
+
+    if street_betw or street_sin:
+        output_file = os.path.join(output_folder, '{}_enriched_streets_'.format(place_name.lower()) + network_type +'.csv')
+        edges.to_csv(output_file)
