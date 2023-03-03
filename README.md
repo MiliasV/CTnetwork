@@ -48,3 +48,9 @@ streets.get_streets_per_bbox(52.032492, 51.966120, 4.372967, 4.344471, network_t
 ```
 
 Or check out our [Examples Notebook](https://github.com/MiliasV/ctwalk/blob/main/examples.ipynb) demonstration various functions of ctwalk!
+
+
+<p float="left">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/examples1.png" width="50%">
+    <img src="https://github.com/MiliasV/ctwalk/blob/main/img/examples2.png" width="50%">
+</p>
