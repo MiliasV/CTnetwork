@@ -6,6 +6,7 @@ import igraph as ig
 import numpy as np
 import os
 from shapely.geometry import Point, LineString
+import area_stats
 
 
 #####################################################################################
@@ -42,7 +43,7 @@ def compute_node_closeness(G_nx, weight='length'):
     return gdf_res
     
     
-def compute_edge_betweenness(G_nx, weight = 'length'):
+def compute_edge_betweenness(G_nx, weight='length'):
     # create networkx graph
     osmids = list(G_nx.edges)
     G_nx = nx.relabel.convert_node_labels_to_integers(G_nx)
@@ -72,7 +73,7 @@ def compute_edge_betweenness(G_nx, weight = 'length'):
     return gdf_res
 
 
-def compute_edge_sinuosity(row):
+def compute_edge_sinuosity_per_row(row):
     x, y = row.geometry.coords.xy
     start_pt = Point(x[0], y[0])
     end_pt = Point(x[-1], y[-1])
@@ -82,12 +83,45 @@ def compute_edge_sinuosity(row):
     else:
         return None
 
+    
+def compute_edge_sinuosity(edges):
+    edges['edge_sinuosity'] = edges.apply(lambda row: compute_edge_sinuosity_per_row(row), axis=1)
+    return edges
+    
+    
+def compute_edge_average_polygon_width(
+        edges, polygons_with_widths, output_col,
+        width_col='avg_width', length_col='total_seg_length', radius=10):
+    # take file with polygons of interest (e.g., sidewalks, bike paths) as input
+    # aggregate widths into an average per street segment (weighted by segment length)
+    
+    if output_col in edges.columns:
+        edges.drop(columns=[output_col], inplace=True)
+
+    edges['original_geometry'] = edges.geometry
+    edges['geometry'] = edges.buffer(radius)
+
+    edges['index'] = edges.index
+    mode = ['wavg']
+    edges_enriched = area_stats.val_per_area(
+        edges, 'index', polygons_with_widths, modes=mode, 
+        value_col=width_col, weight_col=length_col)
+    
+    edges_enriched['geometry'] = edges_enriched['original_geometry']
+    
+    edges_enriched.rename(columns={'avg_width_wavg' : output_col}, inplace=True)    
+    edges_enriched.drop(columns=['original_geometry', 'index'], inplace=True)
+    
+    return edges_enriched
+    
+
 
 ###################################### 
 # collect and store streets per city #
 ######################################
 def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_folder='.', 
-                          intersection_clos=False, street_betw=False, street_sin=False, retain_all=True):
+                          intersection_clos=False, street_betw=False, street_sin=False, retain_all=True,
+                          return_raw_data=False):
     # network_type
     # drive: get drivable public streets (but not service roads)
     # drive_service: get drivable public streets including service roads
@@ -95,8 +129,12 @@ def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_f
     # directionality by always connecting adjacent nodes with reciprocal directed edges)
     # bike: get all streets and paths that cyclists can use
     # all: download all (non-private) OpenStreetMap streets and paths
-    # all_private: download all OpenStreetMap streets and paths, including private-access 
+    # all_private: download all OpenStreetMap streets and paths, including private-access
+    
+    to_return = {}
+    
     for city in cities:
+        
         print(city)
         output_folder = output_folder + '/' + city
         if not os.path.exists(output_folder):
@@ -106,7 +144,7 @@ def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_f
         G = ox.graph_from_place(place_name, network_type=network_type, buffer_dist=buffer_dist, retain_all=retain_all)
         place = ox.geocode_to_gdf(place_name)
 
-        # store the street network if no enrichment is needed
+        # store the street network if no enrichment is needed, return raw street network data if desired
         if not intersection_clos and not street_betw and not street_sin:
             output_file = os.path.join(output_folder, '{}_street_network.csv'.format(place_name.lower()))
             edges = ox.utils_graph.graph_to_gdfs(G, nodes=False, edges=True, node_geometry=False, fill_edge_geometry=True)
@@ -115,7 +153,12 @@ def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_f
             output_file = os.path.join(output_folder, '{}_intersections.csv'.format(place_name.lower()))
             inter = ox.utils_graph.graph_to_gdfs(G, nodes=True, edges=False, node_geometry=False, fill_edge_geometry=True)
             inter.to_csv(output_file)
-            return
+            
+            if return_raw_data:
+                to_return[city] = {
+                    'graph': G, 
+                    'edges': edges, 
+                    'nodes': inter}
 
         # if Intersections - Nodes store closeness per intersection
         if intersection_clos:
@@ -145,11 +188,11 @@ def get_streets_per_cities(cities, buffer_dist=0, network_type='drive', output_f
             output_file = os.path.join(output_folder, '{}_enriched_streets_'.format(place_name.lower()) + network_type +'.csv')
             edges_clipped.to_csv(output_file)
 
-        
-        
+        if return_raw_data:
+            return(to_return)
 
 def get_streets_per_bbox(north, south, east, west, network_type='drive', output_folder='.', 
-                          intersection_clos=False, street_betw=False, street_sin=False, retain_all=True):
+                        intersection_clos=False, street_betw=False, street_sin=False, retain_all=True):
     # network_type
     # drive: get drivable public streets (but not service roads)
     # drive_service: get drivable public streets including service roads
