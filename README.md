@@ -47,4 +47,4 @@ streets.get_streets_per_cities(cities=['Delft'],buffer_dist=10, network_type='dr
 streets.get_streets_per_bbox(52.032492, 51.966120, 4.372967, 4.344471, network_type='drive', output_folder='.',intersection_clos=False, street_betw=True, street_sin=False, retain_all=True)
 ```
 
-Or check out the [Examples Notebook](https://github.com/MiliasV/ctwalk/blob/main/examples.ipynb) demonstration various functions of ctwalk!
+Or check out our [Examples Notebook](https://github.com/MiliasV/ctwalk/blob/main/examples.ipynb) demonstration various functions of ctwalk!
