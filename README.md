@@ -4,6 +4,7 @@ CTwalk is a function-based Python package that enables  you to:
 * Calculate  street network centrality metrics such as street betweenness, street sinuosity, and intersection closeness.
 * Calculate how accessible the POIs are from different origin locations based on the downloaded street network and different weights.
 * Include different metrics of accessibility.
+* Calculate average widths of space along streets dedicated to pedestrians or bicyclists (i.e., sidewalks or bike paths)
 
 <p float="left">
     <img src="https://github.com/MiliasV/ctwalk/blob/main/img/amsterdam_sin.png" width="30%">
@@ -45,3 +46,5 @@ streets.get_streets_per_cities(cities=['Delft'],buffer_dist=10, network_type='dr
 
 streets.get_streets_per_bbox(52.032492, 51.966120, 4.372967, 4.344471, network_type='drive', output_folder='.',intersection_clos=False, street_betw=True, street_sin=False, retain_all=True)
 ```
+
+Or check out the Jupyter Notebook demonstration various functions of ctwalk!
