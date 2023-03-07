@@ -83,3 +83,36 @@ def get_osm_places_per_city(city=None, output_folder='.', epsg=28992, buffer_m=0
     gdf_res.to_csv(output_file)
     return
 
+def get_osm_places_within_buffer(tags, geocoordinates, radius):   
+    url = "http://overpass-api.de/api/interpreter"
+    query = """ 
+    [out:json];
+    (
+        node[{tag}](around:{rad}, {geo});
+        way[{tag}](around:{rad}, {geo});
+        relation[{tag}](around:{rad}, {geo});
+    );
+    out geom;
+    >;
+    out skel qt;
+    """.format(tag = tags, rad=radius, geo = geocoordinates)
+    response =  requests.get(url, params={'data': query})
+    if response.ok:
+        geojson = osm2geojson.json2geojson(response.json())
+        if geojson['features']:
+            gdf = gpd.GeoDataFrame.from_features(geojson)
+            return gdf           # CRS of our input dataset
+        else:
+            return gpd.GeoDataFrame()            # empty dataframe
+
+    elif response.status_code == 429 or response.status_code == 504:
+        if i < n-1:
+            print('Response {}\nWaiting {}sec, and trying again max {} more times'.format(response, (i+1)*30, n-i-1))
+            time.sleep((i+1)*30)
+        else:
+            raise ValueError('No valid response to OSM query after trying {} times'.format(n))
+            return None
+
+    else:
+        raise ValueError('Response {}\nAborting'.format(response))
+        return None
