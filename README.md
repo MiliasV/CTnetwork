@@ -1,5 +1,6 @@
-# ctwalk
-CTwalk is a function-based Python package that enables  you to:
+# CTstreets
+
+CTstreets is a function-based Python package that enables  you to:
 * Download street network and POI data from OpenStreetMap per city or bounding box
 * Calculate  street network centrality metrics such as street betweenness, street sinuosity, and intersection closeness.
 * Calculate how accessible the POIs are from different origin locations based on the downloaded street network and different weights.
@@ -40,7 +41,7 @@ Now you can use the functions of the library.
 For example:
 
 ```Python
-from ctwalk import streets
+from ctstreets import streets
 
 streets.get_streets_per_cities(cities=['Delft'],buffer_dist=10, network_type='drive', intersection_clos=False,  street_betw=False, street_sin=False)
 
