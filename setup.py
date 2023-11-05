@@ -15,8 +15,8 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 
 # This call to setup() does all the work
 setup(
-    name='ctstreets',
-    packages=find_packages(include=['ctstreets']),
+    name='ctnetwork',
+    packages=find_packages(include=['ctnetwork']),
     version='0.1.0',
     description='First Demo iteration',
     long_description=long_description,
