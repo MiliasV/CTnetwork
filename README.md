@@ -41,7 +41,7 @@ Now you can use the functions of the library.
 For example:
 
 ```Python
-from ctstreets import streets
+from ctnetwork import streets
 
 streets.get_streets_per_cities(cities=['Delft'],buffer_dist=10, network_type='drive', intersection_clos=False,  street_betw=False, street_sin=False)
 
