@@ -1,10 +1,8 @@
-# CTstreets
+# CTnetwork
 
-CTstreets is a function-based Python package that enables  you to:
+CTnetwork is a function-based Python package that enables  you to:
 * Download street network and POI data from OpenStreetMap per city or bounding box
 * Calculate  street network centrality metrics such as street betweenness, street sinuosity, and intersection closeness.
-* Calculate how accessible the POIs are from different origin locations based on the downloaded street network and different weights.
-* Include different metrics of accessibility.
 * Calculate average widths of space along streets dedicated to pedestrians or bicyclists (i.e., sidewalks or bike paths)
 
 <p float="left">
