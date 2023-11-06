@@ -27,7 +27,7 @@ Currently developing.
 * Run the following command in the terminal:
 
 ```
-pip install dist/ctwalk-0.1.0-py3-none-any.whl
+pip install dist/ctnetwork-0.1.0-py3-none-any.whl
 ```
 
 ### Get started
